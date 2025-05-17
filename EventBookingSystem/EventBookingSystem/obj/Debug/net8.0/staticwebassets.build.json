@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "d/tIOD60/NtSw4XLvy2ilpvIXvgYiX7T7/ieLo/74v0=",
+  "Source": "EventBookingSystem",
+  "BasePath": "_content/EventBookingSystem",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "EventBookingSystem\\wwwroot",
+      "Source": "EventBookingSystem",
+      "ContentRoot": "E:\\filessss\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
+      "BasePath": "_content/EventBookingSystem",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

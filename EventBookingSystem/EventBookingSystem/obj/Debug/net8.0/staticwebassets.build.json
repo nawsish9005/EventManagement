@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "d/tIOD60/NtSw4XLvy2ilpvIXvgYiX7T7/ieLo/74v0=",
+  "Hash": "kfHwWhbqQYQJeGFo9moV5LjRGIKR+e0uFrvB1DOhsEM=",
   "Source": "EventBookingSystem",
   "BasePath": "_content/EventBookingSystem",
   "Mode": "Default",
@@ -10,10 +10,30 @@
     {
       "Name": "EventBookingSystem\\wwwroot",
       "Source": "EventBookingSystem",
-      "ContentRoot": "E:\\filessss\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
+      "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
       "BasePath": "_content/EventBookingSystem",
       "Pattern": "**"
     }
   ],
-  "Assets": []
+  "Assets": [
+    {
+      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg",
+      "SourceId": "EventBookingSystem",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
+      "BasePath": "_content/EventBookingSystem",
+      "RelativePath": "images/5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg"
+    }
+  ]
 }

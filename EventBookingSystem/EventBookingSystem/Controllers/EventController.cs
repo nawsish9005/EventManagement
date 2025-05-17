@@ -1,4 +1,6 @@
-﻿using EventBookingSystem.Data;
+﻿using AutoMapper;
+using EventBookingSystem.Data;
+using EventBookingSystem.Dto;
 using EventBookingSystem.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,52 +13,130 @@ namespace EventBookingSystem.Controllers
     public class EventController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
-        public EventController(ApplicationDbContext context)
+        public EventController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment env)
         {
             _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
-        {
-            return await _context.Events.ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEvent(int id)
-        {
-            var evt = await _context.Events.FindAsync(id);
-            if (evt == null) return NotFound();
-            return evt;
+            _mapper = mapper;
+            _env = env;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Event>> CreateEvent(Event evt)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<EventResponseDto>> CreateEvent([FromForm] EventCreateDto dto)
         {
-            evt.AvailableSeats = evt.TotalSeats;
-            _context.Events.Add(evt);
+            var ev = new Event
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                EventDate = dto.EventDate,
+                Time = dto.Time,
+                Venue = dto.Venue,
+                Organizer = dto.Organizer,
+                TicketPrice = dto.TicketPrice,
+                TotalSeats = dto.TotalSeats,
+                AvailableSeats = dto.TotalSeats
+            };
+
+            if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
+                Directory.CreateDirectory(uploadsFolder); // Make sure the folder exists
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageUrl.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.ImageUrl.CopyToAsync(stream);
+                }
+
+                ev.ImageUrl = $"/images/{uniqueFileName}";
+            }
+
+            _context.Events.Add(ev);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetEvent), new { id = evt.Id }, evt);
+
+            var response = _mapper.Map<EventResponseDto>(ev);
+            return CreatedAtAction(nameof(GetEventById), new { id = ev.Id }, response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, Event evt)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<EventResponseDto>> UpdateEvent(int id, [FromForm] EventCreateDto dto)
         {
-            if (id != evt.Id) return BadRequest();
-            _context.Entry(evt).State = EntityState.Modified;
+            var ev = await _context.Events.FindAsync(id);
+            if (ev == null)
+                return NotFound();
+
+            // Update basic fields
+            ev.Title = dto.Title;
+            ev.Description = dto.Description;
+            ev.EventDate = dto.EventDate;
+            ev.Time = dto.Time;
+            ev.Venue = dto.Venue;
+            ev.Organizer = dto.Organizer;
+            ev.TicketPrice = dto.TicketPrice;
+
+            // If total seats changed, recalculate available seats
+            if (ev.TotalSeats != dto.TotalSeats)
+            {
+                int bookedSeats = ev.TotalSeats - ev.AvailableSeats;
+                ev.TotalSeats = dto.TotalSeats;
+                ev.AvailableSeats = Math.Max(0, ev.TotalSeats - bookedSeats);
+            }
+
+            // Handle image upload
+            if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
+            {
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(ev.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_env.WebRootPath, ev.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Save new image
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageUrl.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.ImageUrl.CopyToAsync(stream);
+                }
+
+                ev.ImageUrl = $"/images/{uniqueFileName}";
+            }
+
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            var response = _mapper.Map<EventResponseDto>(ev);
+            return Ok(response);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id)
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<EventResponseDto>> GetEventById(int id)
         {
-            var evt = await _context.Events.FindAsync(id);
-            if (evt == null) return NotFound();
-            _context.Events.Remove(evt);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            var ev = await _context.Events.FindAsync(id);
+            if (ev == null) return NotFound();
+
+            var dto = _mapper.Map<EventResponseDto>(ev);
+            return dto;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetAllEvents()
+        {
+            var events = await _context.Events.ToListAsync();
+            return _mapper.Map<List<EventResponseDto>>(events);
         }
     }
 }

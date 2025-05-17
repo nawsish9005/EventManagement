@@ -1,99 +1,83 @@
-﻿using EventBookingSystem.Data;
+﻿using AutoMapper;
+using EventBookingSystem.Data;
+using EventBookingSystem.Dto;
 using EventBookingSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace EventBookingSystem.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public BookingController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public BookingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllBookings()
-        {
-            // Retrieve all bookings with related data
-            var bookings = await _context.Bookings
-                .Include(b => b.Event)
-                .ToListAsync();
-
-            return Ok(bookings);
-        }
-
-        [HttpGet("my")]
-        public async Task<IActionResult> GetMyBookings()
-        {
-            // Get current user's ID
-            var userId = _userManager.GetUserId(User);
-
-            // Query bookings for this user, including event details
-            var bookings = await _context.Bookings
-                .Include(b => b.Event)      // Include related Event
-                .Where(b => b.UserId == userId)
-                .ToListAsync();
-
-            return Ok(bookings);
-        }
-
+        // POST: api/Booking
         [HttpPost]
-        public async Task<IActionResult> CreateBooking([FromBody] Booking request)
+        public async Task<ActionResult<BookingResponseDto>> BookTickets([FromBody] BookingRequestDto dto)
         {
-            // Find the event by ID
-            var ev = await _context.Events.FindAsync(request.EventId);
+            var ev = await _context.Events.FirstOrDefaultAsync(e => e.Id == dto.EventId);
             if (ev == null)
                 return NotFound("Event not found.");
 
-            // Ensure enough seats are available
-            if (ev.AvailableSeats < request.NumberOfTickets)
+            if (dto.NumberOfTickets <= 0)
+                return BadRequest("Number of tickets must be greater than 0.");
+
+            if (ev.AvailableSeats < dto.NumberOfTickets)
                 return BadRequest("Not enough available seats.");
 
-            // Calculate total price
-            var totalAmount = ev.TicketPrice * request.NumberOfTickets;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Get current user's ID (from Identity)
-            var userId = _userManager.GetUserId(User);
-
-            // Create the booking entity
             var booking = new Booking
             {
                 EventId = ev.Id,
                 UserId = userId,
-                NumberOfTickets = request.NumberOfTickets,
-                TotalAmount = totalAmount,
-                BookingDate = DateTime.UtcNow
+                NumberOfTickets = dto.NumberOfTickets,
+                BookingDate = DateTime.UtcNow,
+                TotalAmount = ev.TicketPrice * dto.NumberOfTickets
             };
 
-            // Update available seats
-            ev.AvailableSeats -= request.NumberOfTickets;
+            ev.AvailableSeats -= dto.NumberOfTickets;
 
-            // Add the new booking
             _context.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                // Save all changes (booking + event update)
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Handle concurrent updates to seat count
-                return Conflict("Booking failed due to a concurrent update. Please try again.");
-            }
+            // Fetch Event for DTO mapping (if not included)
+            await _context.Entry(booking).Reference(b => b.Event).LoadAsync();
 
-            return Ok(booking); // Or CreatedAtAction(...) with location header in real use
+            var response = _mapper.Map<BookingResponseDto>(booking);
+            return Ok(response);
+        }
+
+        // GET: api/Booking/mine
+        [HttpGet("mine")]
+        public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetMyBookings()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var bookings = await _context.Bookings
+                .Include(b => b.Event)
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.BookingDate)
+                .ToListAsync();
+
+            var result = _mapper.Map<List<BookingResponseDto>>(bookings);
+            return Ok(result);
         }
 
     }

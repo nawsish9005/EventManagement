@@ -4459,11 +4459,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\filessss\\EventBookingSystem\\EventBookingSystem\\EventBookingSystem.csproj",
+      "projectUniqueName": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\EventBookingSystem.csproj",
       "projectName": "EventBookingSystem",
-      "projectPath": "E:\\filessss\\EventBookingSystem\\EventBookingSystem\\EventBookingSystem.csproj",
+      "projectPath": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\EventBookingSystem.csproj",
       "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-      "outputPath": "E:\\filessss\\EventBookingSystem\\EventBookingSystem\\obj\\",
+      "outputPath": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

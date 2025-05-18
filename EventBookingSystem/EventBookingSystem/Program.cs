@@ -1,5 +1,7 @@
 using EventBookingSystem.Data;
 using EventBookingSystem.Models;
+using EventBookingSystem.Repository.IRepository;
+using EventBookingSystem.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Add Identity with custom User class
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -83,6 +89,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAngularApp");
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

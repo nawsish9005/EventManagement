@@ -2,6 +2,7 @@
 using EventBookingSystem.Data;
 using EventBookingSystem.Dto;
 using EventBookingSystem.Models;
+using EventBookingSystem.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,32 +17,34 @@ namespace EventBookingSystem.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IBookingRepository _bookingRepo;
+        private readonly IEventRepository _eventRepo;
         private readonly IMapper _mapper;
 
-        public BookingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IMapper mapper)
+        public BookingController(
+            IBookingRepository bookingRepo,
+            IEventRepository eventRepo,
+            IMapper mapper)
         {
-            _context = context;
-            _userManager = userManager;
+            _bookingRepo = bookingRepo;
+            _eventRepo = eventRepo;
             _mapper = mapper;
         }
 
-        // POST: api/Booking
         [HttpPost]
-        public async Task<ActionResult<BookingResponseDto>> BookTickets([FromBody] BookingRequestDto dto)
+        [Authorize]
+        public async Task<ActionResult<BookingResponseDto>> CreateBooking([FromBody] BookingRequestDto dto)
         {
-            var ev = await _context.Events.FirstOrDefaultAsync(e => e.Id == dto.EventId);
+            var ev = await _eventRepo.GetByIdAsync(dto.EventId);
             if (ev == null)
-                return NotFound("Event not found.");
+                return NotFound("Event not found");
 
-            if (dto.NumberOfTickets <= 0)
-                return BadRequest("Number of tickets must be greater than 0.");
-
-            if (ev.AvailableSeats < dto.NumberOfTickets)
-                return BadRequest("Not enough available seats.");
+            if (dto.NumberOfTickets <= 0 || dto.NumberOfTickets > ev.AvailableSeats)
+                return BadRequest("Invalid number of tickets or not enough available seats");
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
             var booking = new Booking
             {
@@ -52,31 +55,63 @@ namespace EventBookingSystem.Controllers
                 TotalAmount = ev.TicketPrice * dto.NumberOfTickets
             };
 
+            // Update event seats
             ev.AvailableSeats -= dto.NumberOfTickets;
 
-            _context.Bookings.Add(booking);
-            await _context.SaveChangesAsync();
+            await _bookingRepo.AddAsync(booking);
+            _eventRepo.Update(ev);
+            await _bookingRepo.SaveChangesAsync();
 
-            // Fetch Event for DTO mapping (if not included)
-            await _context.Entry(booking).Reference(b => b.Event).LoadAsync();
+            var response = new BookingResponseDto
+            {
+                Id = booking.Id,
+                EventId = ev.Id,
+                EventTitle = ev.Title,
+                NumberOfTickets = booking.NumberOfTickets,
+                TotalAmount = booking.TotalAmount,
+                BookingDate = booking.BookingDate
+            };
 
-            var response = _mapper.Map<BookingResponseDto>(booking);
-            return Ok(response);
+            return CreatedAtAction(nameof(GetBookingById), new { id = booking.Id }, response);
         }
 
-        // GET: api/Booking/mine
-        [HttpGet("mine")]
-        public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetMyBookings()
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BookingResponseDto>> GetBookingById(int id)
+        {
+            var booking = await _bookingRepo.GetByIdAsync(id);
+            if (booking == null) return NotFound();
+
+            var dto = new BookingResponseDto
+            {
+                Id = booking.Id,
+                EventId = booking.EventId,
+                EventTitle = booking.Event?.Title,
+                NumberOfTickets = booking.NumberOfTickets,
+                TotalAmount = booking.TotalAmount,
+                BookingDate = booking.BookingDate
+            };
+
+            return Ok(dto);
+        }
+
+        [HttpGet("user")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetUserBookings()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var bookings = await _bookingRepo.GetBookingsByUserIdAsync(userId);
 
-            var bookings = await _context.Bookings
-                .Include(b => b.Event)
-                .Where(b => b.UserId == userId)
-                .OrderByDescending(b => b.BookingDate)
-                .ToListAsync();
+            var result = bookings.Select(b => new BookingResponseDto
+            {
+                Id = b.Id,
+                EventId = b.EventId,
+                EventTitle = b.Event?.Title,
+                NumberOfTickets = b.NumberOfTickets,
+                TotalAmount = b.TotalAmount,
+                BookingDate = b.BookingDate
+            });
 
-            var result = _mapper.Map<List<BookingResponseDto>>(bookings);
             return Ok(result);
         }
 

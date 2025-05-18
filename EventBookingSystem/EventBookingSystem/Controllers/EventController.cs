@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using EventBookingSystem.Data;
 using EventBookingSystem.Dto;
 using EventBookingSystem.Models;
-using Microsoft.AspNetCore.Http;
+using EventBookingSystem.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventBookingSystem.Controllers
 {
@@ -12,13 +10,13 @@ namespace EventBookingSystem.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IEventRepository _eventRepo;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
 
-        public EventController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment env)
+        public EventController(IEventRepository eventRepo, IMapper mapper, IWebHostEnvironment env)
         {
-            _context = context;
+            _eventRepo = eventRepo;
             _mapper = mapper;
             _env = env;
         }
@@ -27,23 +25,13 @@ namespace EventBookingSystem.Controllers
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<EventResponseDto>> CreateEvent([FromForm] EventCreateDto dto)
         {
-            var ev = new Event
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                EventDate = dto.EventDate,
-                Time = dto.Time,
-                Venue = dto.Venue,
-                Organizer = dto.Organizer,
-                TicketPrice = dto.TicketPrice,
-                TotalSeats = dto.TotalSeats,
-                AvailableSeats = dto.TotalSeats
-            };
+            var ev = _mapper.Map<Event>(dto);
+            ev.AvailableSeats = dto.TotalSeats;
 
             if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
-                Directory.CreateDirectory(uploadsFolder); // Make sure the folder exists
+                Directory.CreateDirectory(uploadsFolder);
 
                 var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageUrl.FileName);
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -56,8 +44,8 @@ namespace EventBookingSystem.Controllers
                 ev.ImageUrl = $"/images/{uniqueFileName}";
             }
 
-            _context.Events.Add(ev);
-            await _context.SaveChangesAsync();
+            await _eventRepo.AddAsync(ev);
+            await _eventRepo.SaveChangesAsync();
 
             var response = _mapper.Map<EventResponseDto>(ev);
             return CreatedAtAction(nameof(GetEventById), new { id = ev.Id }, response);
@@ -67,11 +55,10 @@ namespace EventBookingSystem.Controllers
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<EventResponseDto>> UpdateEvent(int id, [FromForm] EventCreateDto dto)
         {
-            var ev = await _context.Events.FindAsync(id);
+            var ev = await _eventRepo.GetByIdAsync(id);
             if (ev == null)
                 return NotFound();
 
-            // Update basic fields
             ev.Title = dto.Title;
             ev.Description = dto.Description;
             ev.EventDate = dto.EventDate;
@@ -80,28 +67,24 @@ namespace EventBookingSystem.Controllers
             ev.Organizer = dto.Organizer;
             ev.TicketPrice = dto.TicketPrice;
 
-            // If total seats changed, recalculate available seats
+            // Adjust seats
             if (ev.TotalSeats != dto.TotalSeats)
             {
-                int bookedSeats = ev.TotalSeats - ev.AvailableSeats;
+                int booked = ev.TotalSeats - ev.AvailableSeats;
                 ev.TotalSeats = dto.TotalSeats;
-                ev.AvailableSeats = Math.Max(0, ev.TotalSeats - bookedSeats);
+                ev.AvailableSeats = Math.Max(0, ev.TotalSeats - booked);
             }
 
-            // Handle image upload
             if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
             {
-                // Delete old image if exists
+                // Delete old image
                 if (!string.IsNullOrEmpty(ev.ImageUrl))
                 {
                     var oldImagePath = Path.Combine(_env.WebRootPath, ev.ImageUrl.TrimStart('/'));
                     if (System.IO.File.Exists(oldImagePath))
-                    {
                         System.IO.File.Delete(oldImagePath);
-                    }
                 }
 
-                // Save new image
                 var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
                 Directory.CreateDirectory(uploadsFolder);
                 var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageUrl.FileName);
@@ -115,28 +98,54 @@ namespace EventBookingSystem.Controllers
                 ev.ImageUrl = $"/images/{uniqueFileName}";
             }
 
-            await _context.SaveChangesAsync();
+            _eventRepo.Update(ev);
+            await _eventRepo.SaveChangesAsync();
 
             var response = _mapper.Map<EventResponseDto>(ev);
             return Ok(response);
         }
 
-
         [HttpGet("{id}")]
         public async Task<ActionResult<EventResponseDto>> GetEventById(int id)
         {
-            var ev = await _context.Events.FindAsync(id);
-            if (ev == null) return NotFound();
+            var ev = await _eventRepo.GetByIdAsync(id);
+            if (ev == null)
+                return NotFound();
 
-            var dto = _mapper.Map<EventResponseDto>(ev);
-            return dto;
+            return _mapper.Map<EventResponseDto>(ev);
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetAllEvents()
         {
-            var events = await _context.Events.ToListAsync();
-            return _mapper.Map<List<EventResponseDto>>(events);
+            var events = await _eventRepo.GetAllAsync();
+            return Ok(_mapper.Map<List<EventResponseDto>>(events));
+        }
+
+        [HttpGet("upcoming")]
+        public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetUpcomingEvents()
+        {
+            var upcoming = await _eventRepo.GetUpcomingEventsAsync();
+            return Ok(_mapper.Map<List<EventResponseDto>>(upcoming));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            var ev = await _eventRepo.GetByIdAsync(id);
+            if (ev == null) return NotFound();
+
+            // Optionally delete the image
+            if (!string.IsNullOrEmpty(ev.ImageUrl))
+            {
+                var oldImagePath = Path.Combine(_env.WebRootPath, ev.ImageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(oldImagePath))
+                    System.IO.File.Delete(oldImagePath);
+            }
+
+            _eventRepo.Delete(ev);
+            await _eventRepo.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

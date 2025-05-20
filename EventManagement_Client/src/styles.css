@@ -1,1 +1,104 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+    font-family: Arial, sans-serif;
+  }
+
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background: #343a40;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 60px;
+  }
+
+  .sidebar a {
+    color: #ddd;
+    padding: 15px 20px;
+    display: block;
+    text-decoration: none;
+  }
+
+  .sidebar a:hover {
+    background: #495057;
+  }
+
+  .navbar {
+    background: #0d6efd;
+    color: white;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 250px;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    margin-left: 250px;
+    padding: 80px 20px 20px;
+  }
+
+  .profile-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .profile-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    min-width: 160px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+
+  .dropdown-menu a {
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+    color: black;
+  }
+
+  .dropdown-menu a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .card-header {
+    background-color: #0d6efd;
+    color: white;
+  }
+
+  .table-card, .form-card {
+    max-width: 1000px;
+    margin: auto;
+    margin-bottom: 40px;
+  }
+
+  section {
+    display: none;
+  }
+
+  section.active {
+    display: block;
+  }

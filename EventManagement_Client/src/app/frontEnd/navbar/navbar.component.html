@@ -1,1 +1,13 @@
-<p>navbar works!</p>
+<header class="navbar">
+    <h1 class="navbar-title">Dashboard</h1>
+  
+    <div class="dropdown">
+      <button class="dropbtn">👤 Admin ▾</button>
+      <div class="dropdown-content">
+        <a routerLink="/updateProfile">Profile</a>
+        <a routerLink="/settings">Settings</a>
+        <a (click)="logout()">Logout</a>
+      </div>
+    </div>
+  </header>
+  

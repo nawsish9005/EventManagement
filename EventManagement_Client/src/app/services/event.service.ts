@@ -12,7 +12,22 @@ export class EventService {
 
   public eventUrl="/events";
 
-  public GetAllEvent(){
+  public getAllEvent(){
+    return this.http.get(this.baseUrl + this.eventUrl);
+   }
+   public getEventById(){
+    return this.http.get(this.baseUrl + this.eventUrl);
+   }
+   public updateEvent(){
+    return this.http.get(this.baseUrl + this.eventUrl);
+   }
+   public createEvent(){
+    return this.http.get(this.baseUrl + this.eventUrl);
+   }
+   public getUpComingEvent(){
+    return this.http.get(this.baseUrl + this.eventUrl);
+   }
+   public deleteEvent(){
     return this.http.get(this.baseUrl + this.eventUrl);
    }
 }

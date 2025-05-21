@@ -36,13 +36,18 @@ export class RegisterComponent {
 
   onSubmit(): void {
     if (this.registerForm.invalid) return;
-
+  
     this.authService.register(this.registerForm.value).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('Registration success:', res);
         alert('Registration successful!');
         this.router.navigate(['/login']);
       },
-      error: () => alert('Registration failed.')
+      error: (err) => {
+        console.error('Registration failed:', err);
+        alert('Registration failed.');
+      }
     });
   }
+  
 }

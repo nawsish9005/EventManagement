@@ -11,8 +11,9 @@ const routes: Routes = [
   { path: 'login', title: 'Login', component: LoginComponent },
   { path: 'register', title: 'Register', component: RegisterComponent },
   { path: 'dashboard', title: 'Dashboard', component: DashboaredComponent },
-  { path: 'event', title: 'Event', component: EventComponent,canActivate: [roleGuard], data: { roles: ['Admin'] } },
-  { path: 'unauthorized', component: UnauthorizedComponent}
+  { path: 'event', title: 'Event', component: EventComponent },
+  { path: 'unauthorized', component: UnauthorizedComponent},
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({

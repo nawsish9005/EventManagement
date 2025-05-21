@@ -12,11 +12,11 @@ export class AuthService {
   
   constructor(private http: HttpClient, private router: Router) { }
 
-    // Register user
-    register(model: any): Observable<any> {
-      return this.http.post(`${this.baseUrl}register`, model);
-    }
-  
+  register(model: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}register`, model, {
+      responseType: 'text'
+    });
+  }
   
     login(model: any): Observable<any> {
       return this.http.post(`${this.baseUrl}login`, model).pipe(

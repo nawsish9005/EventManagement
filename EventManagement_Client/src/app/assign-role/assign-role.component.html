@@ -1,0 +1,80 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+
+<div class="content">
+  <!-- Assign Role Form -->
+  <div class="card w-75 mx-auto mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Assign Role to User</h5>
+    </div>
+    <div class="card-body">
+      <!-- Success & Error Messages -->
+      <div *ngIf="message" class="alert alert-success">{{ message }}</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <form [formGroup]="assignRoleForm" (ngSubmit)="assignRole()">
+        <!-- Username Dropdown -->
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <select class="form-select" formControlName="userName">
+            <option value="" disabled>Select User</option>
+            <option *ngFor="let user of allUsers" [value]="user">{{ user }}</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select class="form-select" formControlName="role">
+              <option value="" disabled>Select Role</option>
+              <option *ngFor="let role of allRoles" [value]="role.name">{{ role.name }}</option>
+            </select>
+          </div>
+          
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary px-4" [disabled]="assignRoleForm.invalid">Assign</button>
+          <button type="button" class="btn btn-secondary ms-2" (click)="assignRoleForm.reset()">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assigned Roles Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Assigned Roles</h5>
+    </div>
+    <div class="card-body table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Roles</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of allAssignedRoles; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ user.userName }}</td>
+            <td>
+              <span *ngFor="let role of user.roles" class="badge bg-secondary me-1">{{ role }}</span>
+            </td>
+            <td>
+              <button *ngFor="let role of user.roles"
+                      class="btn btn-sm btn-danger me-2"
+                      (click)="deleteAssignedRole(user.userName, role)">
+                Remove {{ role }}
+              </button>
+
+              <button class="btn btn-sm btn-primary"
+                    (click)="updateAssignedRoleWithConfirm(user.userName, user.roles)">
+              Update Roles
+            </button>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

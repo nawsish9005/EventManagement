@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -38,16 +39,27 @@ export class RegisterComponent {
     if (this.registerForm.invalid) return;
   
     this.authService.register(this.registerForm.value).subscribe({
-      next: (res) => {
-        console.log('Registration success:', res);
-        alert('Registration successful!');
-        this.router.navigate(['/login']);
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'You can now log in!',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          this.router.navigate(['/login']);
+        });
       },
       error: (err) => {
         console.error('Registration failed:', err);
-        alert('Registration failed.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Registration Failed',
+          text: 'Something went wrong. Please try again.',
+          confirmButtonColor: '#d33'
+        });
       }
     });
   }
+  
   
 }

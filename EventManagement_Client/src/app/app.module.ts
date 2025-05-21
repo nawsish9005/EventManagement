@@ -14,6 +14,9 @@ import { LoginComponent } from './auth/login/login.component';
 import { LogoutComponent } from './auth/logout/logout.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { AssignRoleComponent } from './assign-role/assign-role.component';
+import { RoleComponent } from './role/role.component';
+import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     LoginComponent,
     LogoutComponent,
     RegisterComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    AssignRoleComponent,
+    RoleComponent,
+    UpdateProfileComponent
   ],
   imports: [
     BrowserModule,

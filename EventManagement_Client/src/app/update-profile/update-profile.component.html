@@ -1,0 +1,84 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg rounded-4 border-0">
+        <div class="card-header bg-gradient text-white rounded-top-4" style="background: linear-gradient(45deg, #0d6efd, #6610f2);">
+          <h4 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-person-circle me-2 fs-4"></i> Update Profile
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <form *ngIf="profileData" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+            <!-- Username -->
+            <div class="mb-3">
+              <label for="UserName" class="form-label fw-semibold">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" id="UserName" formControlName="UserName" placeholder="Enter username">
+              </div>
+              <div *ngIf="f['UserName'].invalid && (f['UserName'].dirty || f['UserName'].touched)" class="text-danger small mt-1">
+                <div *ngIf="f['UserName'].errors?.['required']">Username is required</div>
+                <div *ngIf="f['UserName'].errors?.['minlength']">Must be at least 3 characters</div>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="Email" class="form-label fw-semibold">Email</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" id="Email" formControlName="Email" placeholder="Enter email">
+              </div>
+              <div *ngIf="f['Email'].invalid && (f['Email'].dirty || f['Email'].touched)" class="text-danger small mt-1">
+                <div *ngIf="f['Email'].errors?.['required']">Email is required</div>
+                <div *ngIf="f['Email'].errors?.['email']">Invalid email format</div>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+              <label for="PhoneNumber" class="form-label fw-semibold">Phone Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input type="tel" class="form-control" id="PhoneNumber" formControlName="PhoneNumber" placeholder="01XXXXXXXXX">
+              </div>
+              <div *ngIf="f['PhoneNumber'].invalid && (f['PhoneNumber'].dirty || f['PhoneNumber'].touched)" class="text-danger small mt-1">
+                <div *ngIf="f['PhoneNumber'].errors?.['required']">Phone number is required</div>
+                <div *ngIf="f['PhoneNumber'].errors?.['pattern']">Invalid Bangladeshi number</div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="profileForm.invalid || isLoading">
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isLoading ? 'Updating...' : 'Update Profile' }}
+              </button>
+            </div>
+
+            <!-- Alerts -->
+            <div *ngIf="successMessage" class="alert alert-success mt-3 rounded-3">
+              <i class="bi bi-check-circle me-1"></i> {{ successMessage }}
+            </div>
+            <div *ngIf="errorMessage" class="alert alert-danger mt-3 rounded-3">
+              <i class="bi bi-exclamation-triangle me-1"></i> {{ errorMessage }}
+            </div>
+
+          </form>
+
+          <!-- Spinner -->
+          <div *ngIf="!profileData && !errorMessage" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

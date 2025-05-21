@@ -1,0 +1,65 @@
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+
+<div class="content">
+    <!-- Role Input Form -->
+    <div class="card w-75 mx-auto mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{ isEditMode ? 'Edit Role' : 'Add Role' }}</h5>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label class="form-label">Role Name</label>
+                    <input type="text" class="form-control" formControlName="name" placeholder="Enter role name" required>
+                    <div *ngIf="f['name'].invalid && (f['name'].dirty || f['name'].touched)" class="text-danger small mt-1">
+                        <div *ngIf="f['name'].errors?.['required']">Role is required</div>
+                        <div *ngIf="f['name'].errors?.['minlength']">Min 3 characters</div>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4" [disabled]="roleForm.invalid || isLoading">
+                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                        {{ isEditMode ? 'Update Role' : 'Add Role' }}
+                    </button>
+                    <button *ngIf="isEditMode" type="button" class="btn btn-secondary ms-2" (click)="cancelEdit()">Cancel</button>
+                </div>
+            </form>
+
+            <div *ngIf="message" class="alert alert-success mt-3 mb-0">{{ message }}</div>
+            <div *ngIf="error" class="alert alert-danger mt-3 mb-0">{{ error }}</div>
+        </div>
+    </div>
+
+    <!-- Role Table -->
+    <div class="card table-card">
+        <div class="card-header">
+            <h5 class="mb-0">Role List</h5>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let role of roles; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ role.name }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info me-2" (click)="editRole(role)">Edit</button>
+                            <button class="btn btn-sm btn-danger" (click)="deleteRole(role)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="roles.length === 0">
+                        <td colspan="3" class="text-center text-muted">No roles found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -102,3 +102,33 @@ body {
   section.active {
     display: block;
   }
+
+  .app-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  app-sidebar {
+    width: 250px;
+    background-color: #0f172a; /* Tailwind slate-900 */
+    color: white;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  .main-content {
+    margin-left: 250px; /* Same as sidebar width */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 250px);
+  }
+  
+  .content-wrapper {
+    padding: 1rem;
+    overflow-y: auto;
+    flex-grow: 1;
+  }
+  

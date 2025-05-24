@@ -11,26 +11,31 @@ export class EventService {
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
-  public eventUrl="/events";
+  public eventUrl="/event";
+  
+  public getAllEvents(): Observable<any> {
+    return this.http.get(this.baseUrl + this.eventUrl);
+  }
 
-  public getAllEvent(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
-   public getEventById(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
-   public updateEvent(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
-   public createEvent(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
-   public getUpComingEvent(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
-   public deleteEvent(){
-    return this.http.get(this.baseUrl + this.eventUrl);
-   }
+  public getUpcomingEvents(): Observable<any> {
+    return this.http.get(this.baseUrl + this.eventUrl + '/upcoming');
+  }
+
+  public getEventById(id: number): Observable<any> {
+    return this.http.get(this.baseUrl + this.eventUrl + `/${id}`);
+  }
+
+  public createEvent(formData: FormData): Observable<any> {
+    return this.http.post(this.baseUrl + this.eventUrl, formData);
+  }
+
+  public updateEvent(id: number, formData: FormData): Observable<any> {
+    return this.http.put(this.baseUrl + this.eventUrl + `/${id}`, formData);
+  }
+
+  public deleteEvent(id: number): Observable<any> {
+    return this.http.delete(this.baseUrl + this.eventUrl + `/${id}`);
+  }
 
     private updateProfileUrl = '/account/updateprofile';
     private getProfileUrl = '/account/getprofile';

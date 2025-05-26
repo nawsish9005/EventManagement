@@ -7,12 +7,13 @@ import { EventService } from '../services/event.service';
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
-export class EventComponent implements OnInit{
+export class EventComponent implements OnInit {
   events: any[] = [];
   eventForm: FormGroup;
   isEditMode = false;
   selectedEventId: number | null = null;
   imagePreview: string | ArrayBuffer | null = null;
+  baseImageUrl = 'https://localhost:7091/images/';
 
   constructor(private eventService: EventService, private fb: FormBuilder) {
     this.eventForm = this.fb.group({
@@ -27,21 +28,27 @@ export class EventComponent implements OnInit{
       imageUrl: [null]
     });
   }
+
   ngOnInit(): void {
     this.loadEvents();
   }
 
   loadEvents() {
     this.eventService.getAllEvents().subscribe({
-      next: data => this.events = data,
+      next: data => {
+        this.events = data.map((ev: { imageUrl: string }) => ({
+          ...ev,
+          imageUrl: `https://localhost:7091${ev.imageUrl}`
+        }));
+      },
       error: err => console.error(err)
     });
   }
+
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.eventForm.patchValue({ imageUrl: file });
-
       const reader = new FileReader();
       reader.onload = () => this.imagePreview = reader.result;
       reader.readAsDataURL(file);
@@ -50,13 +57,21 @@ export class EventComponent implements OnInit{
 
   submitForm() {
     const formData = new FormData();
+  
     Object.keys(this.eventForm.controls).forEach(key => {
       const value = this.eventForm.get(key)?.value;
-      formData.append(key, value);
+  
+      if (key === 'imageUrl') {
+        if (value instanceof File) {
+          formData.append(key, value);
+        }
+      } else {
+        formData.append(key, value);
+      }
     });
-
+  
     if (this.isEditMode && this.selectedEventId !== null) {
-      this.eventService.updateEvent(this.selectedEventId, formData).subscribe({
+      this.eventService.updateEvent(this.selectedEventId!, formData).subscribe({
         next: () => {
           this.resetForm();
           this.loadEvents();
@@ -74,21 +89,34 @@ export class EventComponent implements OnInit{
     }
   }
 
+  formatTime(timeString: string): string {
+    // If backend sends "2" or "2:0", normalize it to "02:00"
+    const timeParts = timeString.split(':');
+    const hours = timeParts[0].padStart(2, '0');
+    const minutes = (timeParts[1] || '00').padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+  
+  
   editEvent(event: any) {
     this.isEditMode = true;
     this.selectedEventId = event.id;
+  
     this.imagePreview = event.imageUrl;
-
+  
+    const date = event.eventDate ? event.eventDate.split('T')[0] : '';
+    const time = event.time ? this.formatTime(event.time) : '';
+  
     this.eventForm.patchValue({
       title: event.title,
       description: event.description,
-      eventDate: event.eventDate,
-      time: event.time,
+      eventDate: date,
+      time: time,
       venue: event.venue,
       organizer: event.organizer,
       ticketPrice: event.ticketPrice,
       totalSeats: event.totalSeats,
-      imageUrl: null  // Image upload will be optional for updates
+      imageUrl: null
     });
   }
 

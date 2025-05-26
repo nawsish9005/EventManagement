@@ -55,61 +55,61 @@ export class EventService {
     private roleBaseUrl = this.baseUrl + '/account';
 
     // ✅ POST: Create a new role
-createRole(roleData: any): Observable<any> {
-  return this.http.post(`${this.roleBaseUrl}/add-role`, roleData);
-}
+    createRole(roleData: any): Observable<any> {
+      return this.http.post(`${this.roleBaseUrl}/add-role`, roleData);
+    }
 
-updateRole(id: string, newRoleName: any): Observable<any> {
-  return this.http.put(`${this.roleBaseUrl}/roleUpdate?id=${id}`, newRoleName);
-}
+    updateRole(id: string, newRoleName: any): Observable<any> {
+      return this.http.put(`${this.roleBaseUrl}/roleUpdate?id=${id}`, newRoleName);
+    }
 
-public getAllRoles() {
-  return this.http.get<string[]>(this.roleBaseUrl + '/get-roles');
-}
+    public getAllRoles() {
+      return this.http.get<string[]>(this.roleBaseUrl + '/get-roles');
+    }
 
-// ✅ DELETE: Remove role
-public deleteRole(id: string) {
-  return this.http.delete(this.roleBaseUrl + `/roleDelete?id=${id}`);
-}
+    // ✅ DELETE: Remove role
+    public deleteRole(id: string) {
+      return this.http.delete(this.roleBaseUrl + `/roleDelete?id=${id}`);
+    }
 
-// Assign role to user — unchanged
-assignRole(data: { userName: string; role: string }): Observable<any> {
-  return this.http.post(`${this.roleBaseUrl}/assign-role`, data, {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    }),
-    observe: 'response'  // This will give you full response access
-  }).pipe(
-    catchError(error => {
-      console.error('API Error:', error);
-      return throwError(error);
-    })
-  );
-}
+    // Assign role to user — unchanged
+    assignRole(data: { userName: string; role: string }): Observable<any> {
+      return this.http.post(`${this.roleBaseUrl}/assign-role`, data, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        }),
+        observe: 'response'  // This will give you full response access
+      }).pipe(
+        catchError(error => {
+          console.error('API Error:', error);
+          return throwError(error);
+        })
+      );
+    }
 
-// ✅ GET: Get all assigned roles for all users
-public getAllAssignedRoles(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.roleBaseUrl}/get-all-assign-role`);
-}
+    // ✅ GET: Get all assigned roles for all users
+    public getAllAssignedRoles(): Observable<any[]> {
+      return this.http.get<any[]>(`${this.roleBaseUrl}/get-all-assign-role`);
+    }
 
-// ✅ GET: Get assigned roles by username
-public getAssignedRoleById(userName: string): Observable<any> {
-  return this.http.get(`${this.roleBaseUrl}/get-assign-role-by-id?username=${userName}`);
-}
+    // ✅ GET: Get assigned roles by username
+    public getAssignedRoleById(userName: string): Observable<any> {
+      return this.http.get(`${this.roleBaseUrl}/get-assign-role-by-id?username=${userName}`);
+    }
 
-// ✅ PUT: Update user's assigned roles
-updateAssignedRole(payload: { userName: string, roles: string[] }): Observable<any> {
-  return this.http.put('your-api-url', payload);
-}
+    // ✅ PUT: Update user's assigned roles
+    updateAssignedRole(payload: { userName: string, roles: string[] }): Observable<any> {
+      return this.http.put('your-api-url', payload);
+    }
 
 
-// ✅ DELETE: Remove role from user
-public deleteAssignedRole(data: { userName: string; role: string }): Observable<any> {
-  return this.http.request('delete', `${this.roleBaseUrl}/delete-assign-role`, { body: data });
-}
+    // ✅ DELETE: Remove role from user
+    public deleteAssignedRole(data: { userName: string; role: string }): Observable<any> {
+      return this.http.request('delete', `${this.roleBaseUrl}/delete-assign-role`, { body: data });
+    }
 
-// Get role by ID — optional
-public getRoleById(id: string) {
-  return this.http.get(this.roleBaseUrl + `/getRoleById?id=${id}`);
-}
+    // Get role by ID — optional
+    public getRoleById(id: string) {
+      return this.http.get(this.roleBaseUrl + `/getRoleById?id=${id}`);
+    }
 }

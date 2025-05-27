@@ -1,8 +1,12 @@
 {
   "Files": [
     {
-      "Id": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg",
-      "PackagePath": "staticwebassets\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg"
+      "Id": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg",
+      "PackagePath": "staticwebassets\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg"
+    },
+    {
+      "Id": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg",
+      "PackagePath": "staticwebassets\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.EventBookingSystem.Microsoft.AspNetCore.StaticWebAssets.props",

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "kfHwWhbqQYQJeGFo9moV5LjRGIKR+e0uFrvB1DOhsEM=",
+  "Hash": "XjBPoYaXPX8P6QLr7oWZDmufVSyTd3XNtH2LOBfgTSE=",
   "Source": "EventBookingSystem",
   "BasePath": "_content/EventBookingSystem",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg",
+      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg",
       "SourceId": "EventBookingSystem",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
       "BasePath": "_content/EventBookingSystem",
-      "RelativePath": "images/5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg",
+      "RelativePath": "images/20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,7 +33,26 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\5f9c571c-5d5d-4e40-bc44-740df64452ed.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg"
+    },
+    {
+      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg",
+      "SourceId": "EventBookingSystem",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
+      "BasePath": "_content/EventBookingSystem",
+      "RelativePath": "images/aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg"
     }
   ]
 }

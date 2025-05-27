@@ -1,4 +1,4 @@
-using EventBookingSystem.Data;
+﻿using EventBookingSystem.Data;
 using EventBookingSystem.Models;
 using EventBookingSystem.Repository.IRepository;
 using EventBookingSystem.Repository;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -59,6 +59,7 @@ namespace EventBookingSystem.Controllers
             if (ev == null)
                 return NotFound();
 
+            // Update event properties
             ev.Title = dto.Title;
             ev.Description = dto.Description;
             ev.EventDate = dto.EventDate;
@@ -75,9 +76,25 @@ namespace EventBookingSystem.Controllers
                 ev.AvailableSeats = Math.Max(0, ev.TotalSeats - booked);
             }
 
+            // Handle image upload if provided
             if (dto.ImageUrl != null && dto.ImageUrl.Length > 0)
             {
-                // Delete old image
+                // ✅ 1. Validate file extension
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                var extension = Path.GetExtension(dto.ImageUrl.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    return BadRequest("Unsupported image file type. Only JPG, JPEG, PNG, and GIF are allowed.");
+                }
+
+                // ✅ 2. Validate file size (limit: 2MB)
+                if (dto.ImageUrl.Length > 2 * 1024 * 1024)
+                {
+                    return BadRequest("Image file too large. Maximum allowed size is 2MB.");
+                }
+
+                // ✅ 3. Delete old image if exists
                 if (!string.IsNullOrEmpty(ev.ImageUrl))
                 {
                     var oldImagePath = Path.Combine(_env.WebRootPath, ev.ImageUrl.TrimStart('/'));
@@ -85,6 +102,7 @@ namespace EventBookingSystem.Controllers
                         System.IO.File.Delete(oldImagePath);
                 }
 
+                // ✅ 4. Save new image
                 var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
                 Directory.CreateDirectory(uploadsFolder);
                 var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.ImageUrl.FileName);
@@ -104,6 +122,7 @@ namespace EventBookingSystem.Controllers
             var response = _mapper.Map<EventResponseDto>(ev);
             return Ok(response);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EventResponseDto>> GetEventById(int id)

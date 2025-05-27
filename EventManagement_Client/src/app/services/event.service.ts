@@ -29,8 +29,12 @@ export class EventService {
     return this.http.post(this.baseUrl + this.eventUrl, formData);
   }
 
+  // public updateEvent(id: number, formData: FormData): Observable<any> {
+  //   return this.http.put(`${this.baseUrl + this.eventUrl}/${id}`, formData)
+  // }
+
   public updateEvent(id: number, formData: FormData): Observable<any> {
-    return this.http.put(this.baseUrl + this.eventUrl + `/${id}`, formData);
+    return this.http.put(`${this.baseUrl + this.eventUrl}/${id}`, formData);
   }
 
   public deleteEvent(id: number): Observable<any> {

@@ -49,34 +49,44 @@ export class EventComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.eventForm.patchValue({ imageUrl: file });
+      this.eventForm.get('imageUrl')?.updateValueAndValidity();
+  
       const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result;
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
       reader.readAsDataURL(file);
     }
   }
+  
 
   submitForm() {
     const formData = new FormData();
   
     Object.keys(this.eventForm.controls).forEach(key => {
-      const value = this.eventForm.get(key)?.value;
+      const controlValue = this.eventForm.get(key)?.value;
   
       if (key === 'imageUrl') {
-        if (value instanceof File) {
-          formData.append(key, value);
+        if (controlValue && controlValue instanceof File) {
+          formData.append('imageUrl', controlValue);
         }
-      } else {
-        formData.append(key, value);
+      } else if (controlValue !== null && controlValue !== undefined) {
+        // Format date/time correctly
+        if (controlValue instanceof Date) {
+          formData.append(key, controlValue.toISOString());
+        } else {
+          formData.append(key, controlValue.toString());
+        }
       }
     });
   
     if (this.isEditMode && this.selectedEventId !== null) {
-      this.eventService.updateEvent(this.selectedEventId!, formData).subscribe({
+      this.eventService.updateEvent(this.selectedEventId, formData).subscribe({
         next: () => {
           this.resetForm();
           this.loadEvents();
         },
-        error: err => console.error(err)
+        error: err => console.error('Update Error:', err)
       });
     } else {
       this.eventService.createEvent(formData).subscribe({
@@ -84,7 +94,7 @@ export class EventComponent implements OnInit {
           this.resetForm();
           this.loadEvents();
         },
-        error: err => console.error(err)
+        error: err => console.error('Create Error:', err)
       });
     }
   }
@@ -101,7 +111,6 @@ export class EventComponent implements OnInit {
   editEvent(event: any) {
     this.isEditMode = true;
     this.selectedEventId = event.id;
-  
     this.imagePreview = event.imageUrl;
   
     const date = event.eventDate ? event.eventDate.split('T')[0] : '';
@@ -116,9 +125,10 @@ export class EventComponent implements OnInit {
       organizer: event.organizer,
       ticketPrice: event.ticketPrice,
       totalSeats: event.totalSeats,
-      imageUrl: null
+      imageUrl: null // ⛳️ Important: Prevent sending image path as string
     });
   }
+  
 
   deleteEvent(id: number) {
     if (confirm('Are you sure to delete this event?')) {

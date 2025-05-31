@@ -1,89 +1,98 @@
 <app-navbar></app-navbar>
 <app-sidebar></app-sidebar>
 
-<div class="container">
-    <h2 class="mb-3">{{ isEditMode ? 'Edit Event' : 'Create Event' }}</h2>
-  
-    <form [formGroup]="eventForm" (ngSubmit)="submitForm()" enctype="multipart/form-data">
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label>Title</label>
-          <input formControlName="title" type="text" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label>Organizer</label>
-          <input formControlName="organizer" type="text" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label>Date</label>
-          <input formControlName="eventDate" type="date" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label>Time</label>
-          <input formControlName="time" type="time" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label>Venue</label>
-          <input formControlName="venue" type="text" class="form-control" required />
-        </div>
-        <div class="col-md-3 mb-3">
-          <label>Ticket Price</label>
-          <input formControlName="ticketPrice" type="number" class="form-control" required />
-        </div>
-        <div class="col-md-3 mb-3">
-          <label>Total Seats</label>
-          <input formControlName="totalSeats" type="number" class="form-control" required />
-        </div>
-        <div class="col-md-12 mb-3">
-          <label>Description</label>
-          <textarea formControlName="description" rows="3" class="form-control" required></textarea>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label>Image</label>
-          <input type="file" (change)="onImageSelected($event)" class="form-control" />
-          <div *ngIf="imagePreview" class="mt-2">
-            <img [src]="imagePreview" alt="Preview" height="100" />
-          </div>
+<div class="container mt-4">
+  <h2 class="mb-3">{{ isEditMode ? 'Edit Event' : 'Create Event' }}</h2>
+
+  <form [formGroup]="eventForm" (ngSubmit)="submitForm()" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label>Title</label>
+        <input formControlName="title" type="text" class="form-control" required />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Organizer</label>
+        <input formControlName="organizer" type="text" class="form-control" required />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Date</label>
+        <input formControlName="eventDate" type="date" class="form-control" required />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Time</label>
+        <input formControlName="time" type="time" class="form-control" required />
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Venue</label>
+        <input formControlName="venue" type="text" class="form-control" required />
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label>Ticket Price</label>
+        <input formControlName="ticketPrice" type="number" class="form-control" required />
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label>Total Seats</label>
+        <input formControlName="totalSeats" type="number" class="form-control" required />
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <label>Description</label>
+        <textarea formControlName="description" rows="3" class="form-control" required></textarea>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label>Image</label>
+        <input type="file" (change)="onImageSelected($event)" class="form-control" />
+        <div *ngIf="imagePreview" class="mt-2">
+          <img [src]="imagePreview" alt="Preview" height="100" />
         </div>
       </div>
-  
-      <button type="submit" class="btn btn-primary me-2" [disabled]="eventForm.invalid">
-        {{ isEditMode ? 'Update' : 'Create' }}
-      </button>
-      <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
-    </form>
-  
-    <hr class="my-4" />
-  
-    <h3>Event List</h3>
-    <table class="table table-bordered table-striped">
-      <thead class="table-dark">
-        <tr>
-          <th>Image</th>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Venue</th>
-          <th>Seats</th>
-          <th>Price</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let ev of events">
-          <td><img [src]="ev.imageUrl" alt="Event" width="80" /></td>
-          <td>{{ ev.title }}</td>
-          <td>{{ ev.eventDate | date }}</td>
-          <td>{{ ev.time }}</td>
-          <td>{{ ev.venue }}</td>
-          <td>{{ ev.availableSeats }}/{{ ev.totalSeats }}</td>
-          <td>{{ ev.ticketPrice }}</td>
-          <td>
-            <button class="btn btn-sm btn-info me-2" (click)="editEvent(ev)">Edit</button>
-            <button class="btn btn-sm btn-danger" (click)="deleteEvent(ev.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2" [disabled]="eventForm.invalid">
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="resetForm()">Reset</button>
+  </form>
+
+  <hr class="my-4" />
+
+  <h3>Event List</h3>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Venue</th>
+        <th>Seats</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ev of events">
+        <td>
+          <img [src]="'https://localhost:7091' + ev.imageUrl" alt="Event" width="80" />
+        </td>
+        <td>{{ ev.title }}</td>
+        <td>{{ ev.eventDate | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ ev.time }}</td>
+        <td>{{ ev.venue }}</td>
+        <td>{{ ev.availableSeats || ev.totalSeats }}/{{ ev.totalSeats }}</td>
+        <td>{{ ev.ticketPrice | currency }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-2" (click)="editEvent(ev)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteEvent(ev.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

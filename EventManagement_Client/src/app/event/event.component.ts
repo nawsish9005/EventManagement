@@ -8,24 +8,24 @@ import { EventService } from '../services/event.service';
   styleUrls: ['./event.component.css']
 })
 export class EventComponent implements OnInit {
-  events: any[] = [];
   eventForm: FormGroup;
-  isEditMode = false;
-  selectedEventId: number | null = null;
+  events: any[] = [];
+  selectedPhoto: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
-  baseImageUrl = 'https://localhost:7091/images/';
+  isEditMode: boolean = false;
+  editEventId: number | null = null;
+  baseUrl: string = 'https://localhost:7091'; // Used for showing image path
 
-  constructor(private eventService: EventService, private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private eventService: EventService) {
     this.eventForm = this.fb.group({
       title: ['', Validators.required],
-      description: ['', Validators.required],
+      organizer: ['', Validators.required],
       eventDate: ['', Validators.required],
       time: ['', Validators.required],
       venue: ['', Validators.required],
-      organizer: ['', Validators.required],
-      ticketPrice: [0, Validators.required],
-      totalSeats: [0, Validators.required],
-      imageUrl: [null]
+      ticketPrice: ['', Validators.required],
+      totalSeats: ['', Validators.required],
+      description: ['', Validators.required]
     });
   }
 
@@ -33,115 +33,103 @@ export class EventComponent implements OnInit {
     this.loadEvents();
   }
 
-  loadEvents() {
+  loadEvents(): void {
     this.eventService.getAllEvents().subscribe({
-      next: data => {
-        this.events = data.map((ev: { imageUrl: string }) => ({
-          ...ev,
-          imageUrl: `https://localhost:7091${ev.imageUrl}`
-        }));
+      next: (data) => {
+        this.events = data;
       },
-      error: err => console.error(err)
+      error: (err) => {
+        console.error('Error loading events', err);
+      }
     });
   }
 
-  onImageSelected(event: any) {
+  onImageSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      this.eventForm.patchValue({ imageUrl: file });
-      this.eventForm.get('imageUrl')?.updateValueAndValidity();
-  
+      this.selectedPhoto = file;
+
       const reader = new FileReader();
       reader.onload = () => {
-        this.imagePreview = reader.result as string;
+        this.imagePreview = reader.result;
       };
       reader.readAsDataURL(file);
     }
   }
-  
 
-  submitForm() {
+  submitForm(): void {
+    if (this.eventForm.invalid) return;
+
     const formData = new FormData();
-  
-    Object.keys(this.eventForm.controls).forEach(key => {
-      const controlValue = this.eventForm.get(key)?.value;
-  
-      if (key === 'imageUrl') {
-        if (controlValue && controlValue instanceof File) {
-          formData.append('imageUrl', controlValue);
-        }
-      } else if (controlValue !== null && controlValue !== undefined) {
-        // Format date/time correctly
-        if (controlValue instanceof Date) {
-          formData.append(key, controlValue.toISOString());
-        } else {
-          formData.append(key, controlValue.toString());
-        }
-      }
+    Object.entries(this.eventForm.value).forEach(([key, value]) => {
+      formData.append(key, value as string);
     });
-  
-    if (this.isEditMode && this.selectedEventId !== null) {
-      this.eventService.updateEvent(this.selectedEventId, formData).subscribe({
+
+    if (this.selectedPhoto) {
+      formData.append('imageFile', this.selectedPhoto);
+    }
+
+    if (this.isEditMode && this.editEventId !== null) {
+      // Updating an event
+      this.eventService.updateEvent(this.editEventId, formData).subscribe({
         next: () => {
           this.resetForm();
           this.loadEvents();
         },
-        error: err => console.error('Update Error:', err)
+        error: (err) => {
+          console.error('Error updating event', err);
+        }
       });
     } else {
+      // Creating a new event
       this.eventService.createEvent(formData).subscribe({
         next: () => {
           this.resetForm();
           this.loadEvents();
         },
-        error: err => console.error('Create Error:', err)
+        error: (err) => {
+          console.error('Error creating event', err);
+        }
       });
     }
   }
 
-  formatTime(timeString: string): string {
-    // If backend sends "2" or "2:0", normalize it to "02:00"
-    const timeParts = timeString.split(':');
-    const hours = timeParts[0].padStart(2, '0');
-    const minutes = (timeParts[1] || '00').padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-  
-  
-  editEvent(event: any) {
+  editEvent(event: any): void {
     this.isEditMode = true;
-    this.selectedEventId = event.id;
-    this.imagePreview = event.imageUrl;
-  
-    const date = event.eventDate ? event.eventDate.split('T')[0] : '';
-    const time = event.time ? this.formatTime(event.time) : '';
-  
+    this.editEventId = event.id;
+    const formattedDate = event.eventDate?.split('T')[0] || '';
     this.eventForm.patchValue({
       title: event.title,
-      description: event.description,
-      eventDate: date,
-      time: time,
-      venue: event.venue,
       organizer: event.organizer,
+      eventDate: formattedDate,
+      time: event.time,
+      venue: event.venue,
       ticketPrice: event.ticketPrice,
       totalSeats: event.totalSeats,
-      imageUrl: null // ⛳️ Important: Prevent sending image path as string
+      description: event.description
     });
+    this.imagePreview = this.baseUrl + event.imageUrl; // Set preview from existing image
+    this.selectedPhoto = null; // Clear selected file in case user doesn’t want to change image
   }
-  
 
-  deleteEvent(id: number) {
-    if (confirm('Are you sure to delete this event?')) {
-      this.eventService.deleteEvent(id).subscribe(() => {
-        this.loadEvents();
+  deleteEvent(id: number): void {
+    if (confirm('Are you sure you want to delete this event?')) {
+      this.eventService.deleteEvent(id).subscribe({
+        next: () => {
+          this.loadEvents();
+        },
+        error: (err) => {
+          console.error('Error deleting event', err);
+        }
       });
     }
   }
 
-  resetForm() {
+  resetForm(): void {
     this.eventForm.reset();
     this.isEditMode = false;
-    this.selectedEventId = null;
+    this.editEventId = null;
+    this.selectedPhoto = null;
     this.imagePreview = null;
   }
 }

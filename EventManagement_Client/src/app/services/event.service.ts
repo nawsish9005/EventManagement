@@ -33,8 +33,8 @@ export class EventService {
   //   return this.http.put(`${this.baseUrl + this.eventUrl}/${id}`, formData)
   // }
 
-  public updateEvent(id: number, formData: FormData): Observable<any> {
-    return this.http.put(`${this.baseUrl + this.eventUrl}/${id}`, formData);
+  updateEvent(id: number, data: FormData) {
+    return this.http.put(`${this.baseUrl}/event/${id}`, data); // ✅ Correct
   }
 
   public deleteEvent(id: number): Observable<any> {

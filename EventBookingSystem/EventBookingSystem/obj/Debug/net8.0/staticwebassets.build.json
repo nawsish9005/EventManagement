@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "XjBPoYaXPX8P6QLr7oWZDmufVSyTd3XNtH2LOBfgTSE=",
+  "Hash": "YDRvT05MoCgzy9dSi561BSrXnDSG7mLL0QN7onFlwws=",
   "Source": "EventBookingSystem",
   "BasePath": "_content/EventBookingSystem",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg",
+      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\111e1370-770a-4a23-825e-7b110bfbbcc3.jpeg",
       "SourceId": "EventBookingSystem",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
       "BasePath": "_content/EventBookingSystem",
-      "RelativePath": "images/20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg",
+      "RelativePath": "images/111e1370-770a-4a23-825e-7b110bfbbcc3.jpeg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -33,15 +33,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\20195c9c-cc6a-46e4-85bc-c752bd871df9.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\111e1370-770a-4a23-825e-7b110bfbbcc3.jpeg"
     },
     {
-      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg",
+      "Identity": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\images\\ff45405f-fe16-4f1d-8c41-18a293b138eb.jpg",
       "SourceId": "EventBookingSystem",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\filessss\\EventManagement\\EventBookingSystem\\EventBookingSystem\\wwwroot\\",
       "BasePath": "_content/EventBookingSystem",
-      "RelativePath": "images/aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg",
+      "RelativePath": "images/ff45405f-fe16-4f1d-8c41-18a293b138eb.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -52,7 +52,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\aa9edb7f-a06c-4608-bc8a-81c604c9f42c.jpg"
+      "OriginalItemSpec": "wwwroot\\images\\ff45405f-fe16-4f1d-8c41-18a293b138eb.jpg"
     }
   ]
 }

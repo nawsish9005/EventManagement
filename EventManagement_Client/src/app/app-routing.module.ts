@@ -9,12 +9,14 @@ import { DashboaredComponent } from './frontEnd/dashboared/dashboared.component'
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import { RoleComponent } from './role/role.component';
 import { AssignRoleComponent } from './assign-role/assign-role.component';
+import { BookingComponent } from './booking/booking.component';
 //,canActivate: [roleGuard], data: { roles: ['Admin'] }
 const routes: Routes = [
   { path: 'login', title: 'Login', component: LoginComponent },
   { path: 'register', title: 'Register', component: RegisterComponent },
   { path: 'dashboard', title: 'Dashboard', component: DashboaredComponent },
   { path: 'event', title: 'Event', component: EventComponent },
+  { path: 'booking', title: 'Booking', component: BookingComponent },
   { path: 'updateProfile', title: 'Update profile', component: UpdateProfileComponent},
   { path: 'role', title: 'Role', component: RoleComponent},
   { path: 'assignRole', title: 'AssignRole', component: AssignRoleComponent},

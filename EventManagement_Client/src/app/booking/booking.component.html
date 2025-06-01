@@ -1,1 +1,59 @@
-<p>booking works!</p>
+<app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="container mt-4">
+    <h2>{{ selectedBookingId ? 'Edit Booking' : 'Create Booking' }}</h2>
+  
+    <form [formGroup]="bookingForm" (ngSubmit)="submitForm()" class="mb-4">
+      <div class="mb-3">
+        <label for="eventId" class="form-label">Select Event</label>
+        <select formControlName="eventId" id="eventId" class="form-select">
+          <option value="">-- Select --</option>
+          <option *ngFor="let event of events" [value]="event.id">
+            {{ event.title }} (Seats: {{ event.availableSeats }})
+          </option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="numberOfTickets" class="form-label">Number of Tickets</label>
+        <input
+          type="number"
+          formControlName="numberOfTickets"
+          id="numberOfTickets"
+          class="form-control"
+          min="1"
+        />
+      </div>
+  
+      <button type="submit" class="btn btn-primary">
+        {{ selectedBookingId ? 'Update Booking' : 'Create Booking' }}
+      </button>
+      <button type="button" class="btn btn-secondary ms-2" (click)="resetForm()">Reset</button>
+    </form>
+  
+    <h3>Booking List</h3>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Tickets</th>
+          <th>Total</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of bookings">
+          <td>{{ booking.eventTitle }}</td>
+          <td>{{ booking.numberOfTickets }}</td>
+          <td>{{ booking.totalAmount | currency }}</td>
+          <td>{{ booking.bookingDate | date: 'short' }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning" (click)="editBooking(booking)">Edit</button>
+            <button class="btn btn-sm btn-danger ms-2" (click)="deleteBooking(booking.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

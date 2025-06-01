@@ -29,17 +29,40 @@ export class EventService {
     return this.http.post(this.baseUrl + this.eventUrl, formData);
   }
 
-  // public updateEvent(id: number, formData: FormData): Observable<any> {
-  //   return this.http.put(`${this.baseUrl + this.eventUrl}/${id}`, formData)
-  // }
-
   updateEvent(id: number, data: FormData) {
-    return this.http.put(`${this.baseUrl}/event/${id}`, data); // ✅ Correct
+    return this.http.put(`${this.baseUrl}/event/${id}`, data);
   }
 
   public deleteEvent(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + this.eventUrl + `/${id}`);
   }
+
+
+  public bookingUrl="/booking";
+  
+  public getUserBooking(): Observable<any> {
+    return this.http.get(this.baseUrl + this.bookingUrl);
+  }
+  public getBookingById(id: number): Observable<any> {
+    return this.http.get(this.baseUrl + this.bookingUrl + `/${id}`);
+  }
+
+  public createBooking(formData: FormData): Observable<any> {
+    return this.http.post(this.baseUrl + this.bookingUrl, formData);
+  }
+  
+  updateBooking(id: number, data: FormData) {
+    return this.http.put(`${this.baseUrl}/event/${id}`, data);
+  }
+
+  public deleteBooking(id: number): Observable<any> {
+    return this.http.delete(this.baseUrl + this.bookingUrl + `/${id}`);
+  }
+
+  getAllBooking(): Observable<any> {
+    return this.http.get(this.baseUrl + this.bookingUrl);
+  }
+  
 
     private updateProfileUrl = '/account/updateprofile';
     private getProfileUrl = '/account/getprofile';

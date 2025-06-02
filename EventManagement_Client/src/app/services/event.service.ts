@@ -52,7 +52,7 @@ export class EventService {
   }
   
   updateBooking(id: number, data: FormData) {
-    return this.http.put(`${this.baseUrl}/event/${id}`, data);
+    return this.http.put(`${this.baseUrl}/booking/${id}`, data);
   }
 
   public deleteBooking(id: number): Observable<any> {

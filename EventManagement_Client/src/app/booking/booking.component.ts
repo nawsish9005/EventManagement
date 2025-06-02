@@ -9,7 +9,7 @@ import { EventService } from '../services/event.service';
 })
 export class BookingComponent implements OnInit{
   bookingForm!: FormGroup;
-  bookings: any[] = [];
+  booking: any[] = [];
   events: any[] = [];
   selectedBookingId: number | null = null;
 
@@ -30,10 +30,14 @@ export class BookingComponent implements OnInit{
 
   loadBookings(): void {
     this.eventService.getAllBooking().subscribe({
-      next: res => this.bookings = res,
-      error: err => console.error('Failed to load bookings', err)
+      next: (res) => {
+        this.booking = res;
+        console.log('Booking:', res);
+      },
+      error: (err) => console.error(err)
     });
   }
+  
 
   loadEvents(): void {
     this.eventService.getAllEvents().subscribe({

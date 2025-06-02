@@ -43,7 +43,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let booking of bookings">
+        <tr *ngFor="let booking of booking">
           <td>{{ booking.eventTitle }}</td>
           <td>{{ booking.numberOfTickets }}</td>
           <td>{{ booking.totalAmount | currency }}</td>

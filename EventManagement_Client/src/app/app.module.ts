@@ -17,6 +17,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { AssignRoleComponent } from './assign-role/assign-role.component';
 import { RoleComponent } from './role/role.component';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,9 @@ import { UpdateProfileComponent } from './update-profile/update-profile.componen
     HttpClientModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -12,6 +12,7 @@ export class BookingComponent implements OnInit{
   booking: any[] = [];
   events: any[] = [];
   selectedBookingId: number | null = null;
+  selectedEvent: any = null;
 
   constructor(private fb: FormBuilder, private eventService: EventService) {}
   
@@ -48,13 +49,14 @@ export class BookingComponent implements OnInit{
 
   submitForm(): void {
     if (this.bookingForm.invalid) return;
-
+  
     const bookingData = this.bookingForm.value;
-
+  
     if (this.selectedBookingId) {
       this.eventService.updateBooking(this.selectedBookingId, bookingData).subscribe({
         next: () => {
           this.loadBookings();
+          this.loadEvents();   // <-- Add this line
           this.resetForm();
         },
         error: err => console.error('Failed to update booking', err)
@@ -63,11 +65,17 @@ export class BookingComponent implements OnInit{
       this.eventService.createBooking(bookingData).subscribe({
         next: () => {
           this.loadBookings();
+          this.loadEvents();   // <-- Add this line
           this.resetForm();
         },
         error: err => console.error('Failed to create booking', err)
       });
     }
+  }  
+
+  onEventChange(): void {
+    const eventId = this.bookingForm.get('eventId')?.value;
+    this.selectedEvent = this.events.find(e => e.id === +eventId);
   }
 
   editBooking(booking: any): void {

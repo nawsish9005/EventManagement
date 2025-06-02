@@ -4,15 +4,22 @@
     <h2>{{ selectedBookingId ? 'Edit Booking' : 'Create Booking' }}</h2>
   
     <form [formGroup]="bookingForm" (ngSubmit)="submitForm()" class="mb-4">
+      
       <div class="mb-3">
         <label for="eventId" class="form-label">Select Event</label>
-        <select formControlName="eventId" id="eventId" class="form-select">
+        <select formControlName="eventId" id="eventId" class="form-select" (change)="onEventChange()">
           <option value="">-- Select --</option>
           <option *ngFor="let event of events" [value]="event.id">
             {{ event.title }} (Seats: {{ event.availableSeats }})
           </option>
         </select>
+      
+        <!-- ✅ Show available seats below -->
+        <div *ngIf="selectedEvent">
+          <p class="mt-2 text-muted">Available Seats: {{ selectedEvent.availableSeats }}</p>
+        </div>
       </div>
+      
   
       <div class="mb-3">
         <label for="numberOfTickets" class="form-label">Number of Tickets</label>

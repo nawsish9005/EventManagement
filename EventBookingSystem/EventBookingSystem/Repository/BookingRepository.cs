@@ -29,5 +29,13 @@ namespace EventBookingSystem.Repository
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Booking>> GetAllWithEventAsync()
+        {
+            return await _context.Bookings
+                .Include(b => b.Event)
+                .ToListAsync();
+        }
+
     }
 }

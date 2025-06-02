@@ -12,7 +12,6 @@ using System.Security.Claims;
 
 namespace EventBookingSystem.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingController : ControllerBase
@@ -32,7 +31,6 @@ namespace EventBookingSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<BookingResponseDto>> CreateBooking([FromBody] BookingRequestDto dto)
         {
             var ev = await _eventRepo.GetByIdAsync(dto.EventId);
@@ -76,7 +74,6 @@ namespace EventBookingSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<BookingResponseDto>> GetBookingById(int id)
         {
             var booking = await _bookingRepo.GetByIdAsync(id);
@@ -96,7 +93,6 @@ namespace EventBookingSystem.Controllers
         }
 
         [HttpGet("user")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetUserBookings()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -113,6 +109,49 @@ namespace EventBookingSystem.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateBooking(int id, [FromBody] BookingRequestDto dto)
+        {
+            var booking = await _bookingRepo.GetByIdAsync(id);
+            if (booking == null) return NotFound();
+
+            booking.NumberOfTickets = dto.NumberOfTickets;
+            booking.TotalAmount = booking.NumberOfTickets * booking.Event?.TicketPrice ?? 0;
+            await _bookingRepo.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBooking(int id)
+        {
+            var booking = await _bookingRepo.GetByIdAsync(id);
+            if (booking == null) return NotFound();
+
+            _bookingRepo.Delete(booking);
+            await _bookingRepo.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetAllBookings()
+        {
+            var bookings = await _bookingRepo.GetAllWithEventAsync();
+
+            var response = bookings.Select(b => new BookingResponseDto
+            {
+                Id = b.Id,
+                EventId = b.EventId,
+                EventTitle = b.Event?.Title ?? "Unknown",
+                NumberOfTickets = b.NumberOfTickets,
+                TotalAmount = b.TotalAmount,
+                BookingDate = b.BookingDate
+            });
+
+            return Ok(response);
         }
 
     }

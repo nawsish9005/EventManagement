@@ -6,5 +6,8 @@ namespace EventBookingSystem.Repository.IRepository
     {
         Task<IEnumerable<Booking>> GetBookingsByEventIdAsync(int eventId);
         Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(string userId);
+
+        Task<IEnumerable<Booking>> GetAllWithEventAsync();
+
     }
 }

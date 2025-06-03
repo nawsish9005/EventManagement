@@ -130,11 +130,20 @@ namespace EventBookingSystem.Controllers
             var booking = await _bookingRepo.GetByIdAsync(id);
             if (booking == null) return NotFound();
 
+            // Get the event associated with this booking
+            var ev = await _eventRepo.GetByIdAsync(booking.EventId);
+            if (ev != null)
+            {
+                ev.AvailableSeats += booking.NumberOfTickets; // Restore the seats
+                _eventRepo.Update(ev); // Mark event as updated
+            }
+
             _bookingRepo.Delete(booking);
-            await _bookingRepo.SaveChangesAsync();
+            await _bookingRepo.SaveChangesAsync(); // Save both event and booking changes
 
             return NoContent();
         }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookingResponseDto>>> GetAllBookings()

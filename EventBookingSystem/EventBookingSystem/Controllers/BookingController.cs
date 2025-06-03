@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using System.Security.Claims;
 
 namespace EventBookingSystem.Controllers
@@ -162,6 +163,62 @@ namespace EventBookingSystem.Controllers
 
             return Ok(response);
         }
+
+        [HttpPut("purchase/{id}")]
+        public async Task<IActionResult> PurchaseBooking(int id)
+        {
+            var booking = await _bookingRepo.GetByIdAsync(id);
+            if (booking == null) return NotFound("Booking not found");
+
+            if (booking.IsPurchased)
+                return BadRequest("This booking is already purchased.");
+
+            booking.IsPurchased = true;
+            booking.PurchaseDate = DateTime.UtcNow;
+
+            _bookingRepo.Update(booking);
+            await _bookingRepo.SaveChangesAsync();
+
+            return Ok(new { message = "Booking successfully purchased." });
+        }
+
+        [HttpPost("pay")]
+        public async Task<IActionResult> MakePayment([FromBody] PaymentRequestDto dto)
+        {
+            var booking = await _bookingRepo.GetByIdAsync(dto.BookingId);
+            if (booking == null)
+                return NotFound("Booking not found");
+
+            if (booking.IsPaid)
+                return BadRequest("This booking is already paid.");
+
+            // Simulate payment success (you can integrate real gateway later)
+            booking.IsPaid = true;
+            booking.PaymentDate = DateTime.UtcNow;
+
+            _bookingRepo.Update(booking);
+            await _bookingRepo.SaveChangesAsync();
+
+            return Ok(new { message = "Payment successful", paidAmount = booking.TotalAmount });
+        }
+
+        [HttpPost("create-payment-intent")]
+        public IActionResult CreatePaymentIntent([FromBody] PaymentIntentRequestDto dto)
+        {
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = (long)(dto.Amount * 100), // amount in cents
+                Currency = "usd",
+                PaymentMethodTypes = new List<string> { "card" },
+            };
+
+            var service = new PaymentIntentService();
+            var intent = service.Create(options);
+
+            return Ok(new { clientSecret = intent.ClientSecret });
+        }
+
+
 
     }
 }

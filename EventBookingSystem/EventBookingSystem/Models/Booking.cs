@@ -9,5 +9,10 @@
         public int NumberOfTickets { get; set; }
         public DateTime BookingDate { get; set; }
         public decimal TotalAmount { get; set; }
+
+        public bool IsPurchased { get; set; } = false;
+        public DateTime? PurchaseDate { get; set; }
+        public bool IsPaid { get; set; } = false;
+        public DateTime? PaymentDate { get; set; }
     }
 }

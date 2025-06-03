@@ -33,7 +33,7 @@ export class AuthService {
     // Logout
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    console.log('Token removed:', this.getToken()); // Should log 'null'
+    console.log('Token removed:', this.getToken());
     this.router.navigate(['/login']);
   }
 

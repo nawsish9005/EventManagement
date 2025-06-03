@@ -50,6 +50,18 @@ export class EventService {
   public createBooking(formData: FormData): Observable<any> {
     return this.http.post(this.baseUrl + this.bookingUrl, formData);
   }
+
+  purchaseBooking(id: number) {
+    return this.http.put(`${this.baseUrl}/booking/purchase/${id}`, {});
+  }
+  
+  makePayment(bookingId: number) {
+    return this.http.post(`${this.baseUrl}/Booking/pay`, { bookingId });
+  }  
+  
+  payForBooking(id: number) {
+    return this.http.put(`${this.baseUrl}/Booking/pay/${id}`, null);
+  }  
   
   updateBooking(id: number, data: FormData) {
     return this.http.put(`${this.baseUrl}/booking/${id}`, data);

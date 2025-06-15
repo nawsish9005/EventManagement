@@ -198,7 +198,6 @@ E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Microsoft.OpenApi.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Mono.TextTemplating.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
@@ -211,14 +210,11 @@ E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Composition.Runtime.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Composition.TypedParts.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Drawing.Common.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Formats.Asn1.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Memory.Data.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Runtime.Caching.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Security.Permissions.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\System.Windows.Extensions.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
@@ -277,12 +273,7 @@ E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\EventBookingSystem.csproj.AssemblyReference.cache
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\EventBookingSystem.GeneratedMSBuildEditorConfig.editorconfig
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\EventBookingSystem.AssemblyInfoInputs.cache
@@ -305,3 +296,5 @@ E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\EventBookingSystem.pdb
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\EventBookingSystem.genruntimeconfig.cache
 E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\obj\Debug\net8.0\ref\EventBookingSystem.dll
+E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\filessss\EventManagement\EventBookingSystem\EventBookingSystem\bin\Debug\net8.0\Stripe.net.dll

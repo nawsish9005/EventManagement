@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EventService } from '../services/event.service';
 import { ToastrService } from 'ngx-toastr';
 import { loadStripe } from '@stripe/stripe-js';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-booking',
@@ -11,16 +12,17 @@ import { loadStripe } from '@stripe/stripe-js';
 })
 export class BookingComponent implements OnInit {
   bookingForm!: FormGroup;
-  booking: any[] = [];
+  booking: Booking[] = [];
   events: any[] = [];
   selectedBookingId: number | null = null;
   selectedEvent: any = null;
-  stripePromise = loadStripe('your_stripe_publishable_key');
-  
+  stripePromise = loadStripe('your_stripe_publishable_key'); // Replace with your key
+
   constructor(
     private fb: FormBuilder,
     private eventService: EventService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -124,37 +126,54 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  // async pay(booking: Booking) {
-  //   const stripe = await this.stripePromise;
-  //   const response = await this.http.post<any>('https://localhost:7091/api/Booking/create-payment-intent', {
-  //     amount: booking.totalAmount
-  //   }).toPromise();
-  
-  //   const result = await stripe!.redirectToCheckout({
-  //     clientReferenceId: booking.id.toString(),
-  //     lineItems: [{
-  //       price_data: {
-  //         currency: 'usd',
-  //         product_data: {
-  //           name: booking.eventTitle
-  //         },
-  //         unit_amount: booking.totalAmount * 100
-  //       },
-  //       quantity: booking.numberOfTickets
-  //     }],
-  //     mode: 'payment',
-  //     successUrl: window.location.origin + '/booking-success',
-  //     cancelUrl: window.location.origin + '/booking-cancel',
-  //   });
-  
-  //   if (result.error) {
-  //     console.error(result.error.message);
-  //   }
-  // }
+  async pay(booking: Booking): Promise<void> {
+    const stripe = await this.stripePromise;
+    if (!stripe) {
+      this.toastr.error('Stripe failed to load.');
+      return;
+    }
+    try {
+      const response = await this.http.post<any>(
+        'https://localhost:7091/api/Booking/create-payment-intent',
+        { amount: booking.totalAmount }
+      ).toPromise();
+
+      const result = await stripe.redirectToCheckout({
+        clientReferenceId: booking.id.toString(),
+        lineItems: [
+          {
+            price: 'your_price_id_here', // Replace with your real Price ID
+            quantity: booking.numberOfTickets
+          }
+        ],
+        mode: 'payment',
+        successUrl: window.location.origin + '/booking-success',
+        cancelUrl: window.location.origin + '/booking-cancel',
+      });
+
+      if (result.error) {
+        console.error(result.error.message);
+        this.toastr.error(result.error.message);
+      }
+    } catch (error) {
+      console.error('Stripe checkout error:', error);
+      this.toastr.error('Failed to initiate Stripe checkout');
+    }
+  }
 
   resetForm(): void {
     this.bookingForm.reset();
     this.selectedBookingId = null;
     this.selectedEvent = null;
   }
+}
+
+export interface Booking {
+  id: number;
+  eventId: number;
+  eventTitle: string;
+  numberOfTickets: number;
+  totalAmount: number;
+  bookingDate: Date;
+  isPaid: boolean;
 }

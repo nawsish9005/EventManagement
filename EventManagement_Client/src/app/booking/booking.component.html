@@ -65,11 +65,21 @@
         <td>
           <button class="btn btn-sm btn-warning" (click)="editBooking(booking)">Edit</button>
           <button class="btn btn-sm btn-danger ms-2" (click)="deleteBooking(booking.id)">Delete</button>
+          
+          <!-- Backend Payment -->
           <button
             class="btn btn-sm btn-success ms-2"
             [disabled]="booking.isPaid"
             (click)="payNow(booking.id)">
             {{ booking.isPaid ? 'Paid' : 'Pay Now' }}
+          </button>
+
+          <!-- Stripe Checkout -->
+          <button
+            class="btn btn-sm btn-info ms-2"
+            [disabled]="booking.isPaid"
+            (click)="pay(booking)">
+            Stripe Pay
           </button>
         </td>
       </tr>
